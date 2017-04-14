@@ -1,0 +1,43 @@
+#!/bin/bash
+# Build "native" desktop app using nativefier
+# https://github.com/jiahaog/nativefier
+
+if [ "$(uname)" != "Darwin" ]; then
+  echo "MacOS is the only platform currently supported" >&2
+  exit 1
+fi 
+
+if [ ! -f beehive ]; then
+  echo "Run 'make embed' first." >&2
+  exit 1
+fi
+
+if !which nativefier >/dev/null 2>&1; then
+  echo "nativefier not found!" >&2
+  echo "npm install -g nativifier" >&2
+  exit 1
+fi
+
+OS_NAME=$(node -e "console.log(os.platform())")
+OS_ARCH=$(node -e "console.log(os.arch())")
+
+if [ "$OS_NAME" = "darwin" ]; then
+  BIN_PATH=build/app/Beehive-$OS_NAME-$OS_ARCH/Beehive.app/Contents/MacOS/
+  nativefier -e 1.6.6 --icon assets/beehive.icns --name Beehive http://localhost:8181 build/app
+  cp beehive $BIN_PATH/beehived
+  chmod +x $BIN_PATH/beehived
+  mv $BIN_PATH/Beehive $BIN_PATH/Beehive.bin
+  
+  cat > $BIN_PATH/Beehive << "EOF"
+#!/bin/bash
+set -e
+
+BASE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )"
+LIBRARY_PATH=$HOME/Library/Application\ Support/Beehive
+mkdir -p "$LIBRARY_PATH"
+$BASE_PATH/beehived --config "$LIBRARY_PATH/beehive.conf" &
+trap "killall beehived" EXIT
+$BASE_PATH/Beehive.bin
+EOF
+  chmod +x build/app/Beehive-$OS_NAME-$OS_ARCH/Beehive.app/Contents/MacOS/Beehive
+fi
