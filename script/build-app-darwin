@@ -56,11 +56,6 @@ cat > $RES_PATH/launchagent.plist << "EOF"
   <key>LowPriorityIO</key>
   <true/>
 
-  <key>StandardOutPath</key>
-  <string>/Users/@@user@@/Library/Logs/beehived.log</string>
-  <key>StandardErrorPath</key>
-  <string>/Users/@@user@@/Library/Logs/beehived.log</string>
-
   <key>ProcessType</key>
   <string>Background</string>
 </dict>
