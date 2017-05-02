@@ -47,7 +47,7 @@ cat > $RES_PATH/launchagent.plist << "EOF"
   <array>
     <string>@@bin_path@@</string>
     <string>--config</string>
-    <string>/Users/@@user@@/Library/Application\ Support/Beehive/beehive.conf</string>
+    <string>/Users/@@user@@/Library/Application Support/Beehive/beehive.conf</string>
   </array>
 
   <key>KeepAlive</key>
